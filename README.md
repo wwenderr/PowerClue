@@ -1,7 +1,7 @@
 <div align="center">
   <img src="docs/powerclue-icon.svg" alt="PowerClue icon" width="112" />
   <h1>PowerClue</h1>
-  <p><strong>Find the clue behind your Mac's battery drain and slowdowns.</strong></p>
+  <p><strong>Set a battery-life goal. Test one change. See what actually helps.</strong></p>
   <p>A native, private power and performance monitor for macOS.</p>
   <p>
     <img src="https://img.shields.io/badge/macOS-14%2B-1d3554?style=flat-square" alt="macOS 14+" />
@@ -13,7 +13,9 @@
 
 ![Abstract electric waveform with a lightning bolt, the PowerClue visual identity](docs/powerclue-hero.jpg)
 
-PowerClue lives in the menu bar and turns raw system readings into useful leads: how fast the battery is draining, what the Mac is doing, which processes are active, and what happened during sleep. Open the dashboard when you want the detail behind a warning.
+**Power Mission** is the experiment behind PowerClue: choose how long you need your Mac to last, try one change, and compare whole-Mac battery power before and after. When the readings are clear, PowerClue estimates how much runtime that change could save. When they are noisy, it says so.
+
+The menu bar also shows how fast the battery is draining. Open the dashboard to explore active processes, performance, and what happened during sleep.
 
 ## At a glance
 
