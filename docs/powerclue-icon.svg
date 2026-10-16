@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="PowerClue icon">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#172848"/>
+      <stop offset="1" stop-color="#080f22"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ffcd70"/>
+      <stop offset=".52" stop-color="#ff793e"/>
+      <stop offset="1" stop-color="#ff4b59"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <rect x="3" y="3" width="154" height="154" rx="40" fill="url(#tile)" stroke="#345076" stroke-width="2"/>
+  <circle cx="80" cy="84" r="48" fill="#1876ff" opacity=".16" filter="url(#glow)"/>
+  <path d="M96 25 51 85h31l-17 50 48-67H82z" fill="url(#bolt)" stroke="#ffdca1" stroke-linejoin="round" stroke-width="3"/>
+  <path d="M31 119h20m58-76h20" stroke="#43bcff" stroke-linecap="round" stroke-width="4" opacity=".8"/>
+  <circle cx="29" cy="119" r="3" fill="#43bcff"/>
+  <circle cx="131" cy="43" r="3" fill="#43bcff"/>
+</svg>

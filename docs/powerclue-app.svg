@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="860" viewBox="0 0 1600 860" role="img" aria-label="Illustration of the PowerClue dashboard and menu bar popover with sample data">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1731"/><stop offset=".55" stop-color="#101328"/><stop offset="1" stop-color="#1c1229"/></linearGradient>
+    <linearGradient id="window" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1a2437"/><stop offset="1" stop-color="#0d1728"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#172337"/><stop offset="1" stop-color="#111b2b"/></linearGradient>
+    <linearGradient id="warning" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#563039"/><stop offset="1" stop-color="#302637"/></linearGradient>
+    <linearGradient id="chart" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4aa7ff" stop-opacity=".28"/><stop offset="1" stop-color="#4aa7ff" stop-opacity="0"/></linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="25" stdDeviation="28" flood-color="#020713" flood-opacity=".6"/></filter>
+    <filter id="blur"><feGaussianBlur stdDeviation="70"/></filter>
+    <clipPath id="window-clip"><rect x="65" y="120" width="1120" height="662" rx="24"/></clipPath>
+  </defs>
+  <rect width="1600" height="860" fill="url(#background)"/>
+  <ellipse cx="302" cy="210" rx="300" ry="200" fill="#207cff" opacity=".18" filter="url(#blur)"/>
+  <ellipse cx="1323" cy="643" rx="300" ry="190" fill="#e95561" opacity=".15" filter="url(#blur)"/>
+  <text x="72" y="75" fill="#83a4cc" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="20" font-weight="700" letter-spacing="3">POWERCLUE  /  MACOS</text>
+  <text x="1168" y="75" fill="#92a9c8" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="19">THE SIGNAL BEHIND THE DRAIN</text>
+
+  <g filter="url(#shadow)">
+    <rect x="65" y="120" width="1120" height="662" rx="24" fill="url(#window)" stroke="#3a4b63" stroke-width="2"/>
+    <g clip-path="url(#window-clip)">
+      <rect x="65" y="120" width="1120" height="49" fill="#1e2a3a"/>
+      <circle cx="91" cy="144" r="7" fill="#ff5f57"/><circle cx="113" cy="144" r="7" fill="#febc2e"/><circle cx="135" cy="144" r="7" fill="#28c840"/>
+      <text x="604" y="151" text-anchor="middle" fill="#dce8f8" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="600">PowerClue</text>
+      <rect x="65" y="169" width="205" height="613" fill="#121c2c"/>
+      <text x="92" y="211" fill="#f3f7ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="20" font-weight="700">ϟ  PowerClue</text>
+      <rect x="78" y="246" width="178" height="38" rx="9" fill="#2a3d56"/>
+      <text x="99" y="271" fill="#eaf4ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="600">◉   Overview</text>
+      <g fill="#96a9c4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">
+        <text x="99" y="316">▦   Processes</text><text x="99" y="358">▰   Battery</text><text x="99" y="400">▥   Performance</text><text x="99" y="442">☾   Sleep</text><text x="99" y="484">◷   History</text><text x="99" y="526">⚙   Settings</text>
+      </g>
+      <text x="91" y="733" fill="#6784a9" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">PRIVATE • ON THIS MAC</text>
+
+      <text x="302" y="215" fill="#f5f8ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="27" font-weight="700">Overview</text>
+      <text x="1118" y="214" text-anchor="end" fill="#91a8c5" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15">Updated just now</text>
+      <rect x="300" y="235" width="842" height="68" rx="13" fill="url(#warning)" stroke="#654550"/>
+      <circle cx="330" cy="269" r="12" fill="#ff7750"/>
+      <text x="357" y="264" fill="#fff2ed" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="17" font-weight="700">Battery drain is above your usual level</text>
+      <text x="357" y="285" fill="#d8bfc2" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">Chrome is one possible contributor; compare the signals below.</text>
+
+      <rect x="300" y="321" width="408" height="203" rx="15" fill="url(#card)" stroke="#2c4058"/>
+      <text x="324" y="351" fill="#a8bbd4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="600">BATTERY</text>
+      <text x="322" y="414" fill="#f8fbff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="56" font-weight="700">74%</text>
+      <text x="325" y="448" fill="#ff8068" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="20" font-weight="700">−11.0 W</text>
+      <text x="325" y="476" fill="#a9bdd5" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">About 5h 10m remaining</text>
+      <path d="M324 503 C351 498 362 510 390 504 S433 507 460 502 S510 510 538 501 S583 508 610 500 S665 506 683 500" fill="none" stroke="#ff785c" stroke-width="2.5"/>
+
+      <rect x="724" y="321" width="418" height="203" rx="15" fill="url(#card)" stroke="#2c4058"/>
+      <text x="748" y="351" fill="#a8bbd4" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="600">PERFORMANCE</text>
+      <text x="748" y="398" fill="#e7f2ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16">CPU</text><text x="1049" y="398" fill="#f7fbff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="17" font-weight="700">42%</text>
+      <rect x="748" y="411" width="367" height="10" rx="5" fill="#29394e"/><rect x="748" y="411" width="154" height="10" rx="5" fill="#ff854e"/>
+      <text x="748" y="455" fill="#e7f2ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16">Memory</text><text x="1049" y="455" fill="#f7fbff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="17" font-weight="700">68%</text>
+      <rect x="748" y="468" width="367" height="10" rx="5" fill="#29394e"/><rect x="748" y="468" width="250" height="10" rx="5" fill="#438cff"/>
+      <text x="748" y="505" fill="#87a2c1" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">Thermal state: normal</text>
+
+      <rect x="300" y="541" width="842" height="205" rx="15" fill="url(#card)" stroke="#2c4058"/>
+      <text x="324" y="573" fill="#f0f6ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="18" font-weight="700">What may be contributing</text>
+      <text x="326" y="610" fill="#a2b7d1" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">PROCESS</text><text x="688" y="610" fill="#a2b7d1" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">ACTIVITY</text><text x="976" y="610" fill="#a2b7d1" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14">CPU</text>
+      <path d="M324 620H1115M324 659H1115M324 698H1115" stroke="#304157"/>
+      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" fill="#eaf1fb"><text x="326" y="645">Google Chrome</text><text x="326" y="684">WindowServer</text><text x="326" y="723">Slack</text></g>
+      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="600"><text x="688" y="645" fill="#ff8069">High</text><text x="688" y="684" fill="#ffb35f">Medium</text><text x="688" y="723" fill="#ffb35f">Medium</text></g>
+      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" fill="#d8e6fa"><text x="978" y="645">42.1%</text><text x="978" y="684">24.3%</text><text x="978" y="723">8.2%</text></g>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1190" y="109" width="340" height="513" rx="22" fill="#152236" stroke="#4b6080" stroke-width="2"/>
+    <rect x="1191" y="110" width="338" height="60" rx="22" fill="#1e2b40"/>
+    <text x="1219" y="148" fill="#ffae70" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="22" font-weight="700">ϟ</text>
+    <text x="1245" y="148" fill="#f7fbff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="19" font-weight="700">74% · 11 W</text>
+    <text x="1488" y="148" text-anchor="end" fill="#9db0ca" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">~5h 10m left</text>
+    <rect x="1205" y="184" width="310" height="66" rx="13" fill="url(#warning)"/>
+    <circle cx="1226" cy="217" r="9" fill="#ff7253"/>
+    <text x="1245" y="212" fill="#fff0eb" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" font-weight="700">High battery drain</text>
+    <text x="1245" y="232" fill="#d8c1c6" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12">Above your recent baseline</text>
+    <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" fill="#dfebfa">
+      <text x="1216" y="287">CPU</text><text x="1216" y="323">Memory</text><text x="1216" y="359">Network</text>
+    </g>
+    <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="15" fill="#e9f3ff" text-anchor="end">
+      <text x="1336" y="287">42%</text><text x="1336" y="323">68%</text><text x="1336" y="359">8.1 MB/s</text>
+    </g>
+    <g fill="#26374c"><rect x="1351" y="275" width="157" height="12" rx="6"/><rect x="1351" y="311" width="157" height="12" rx="6"/><rect x="1351" y="347" width="157" height="12" rx="6"/></g>
+    <rect x="1351" y="275" width="66" height="12" rx="6" fill="#ff854e"/><rect x="1351" y="311" width="107" height="12" rx="6" fill="#448aff"/><rect x="1351" y="347" width="47" height="12" rx="6" fill="#8056e6"/>
+    <text x="1215" y="400" fill="#a9bcd3" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13">TOP PROCESSES BY ACTIVITY</text>
+    <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#eef5ff"><text x="1215" y="431">Google Chrome</text><text x="1215" y="463">WindowServer</text><text x="1215" y="495">Slack</text></g>
+    <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" text-anchor="end"><text x="1498" y="431" fill="#ff826c">High</text><text x="1498" y="463" fill="#ffbc6c">Medium</text><text x="1498" y="495" fill="#ffbc6c">Medium</text></g>
+    <rect x="1205" y="527" width="310" height="76" rx="11" fill="#23354e" stroke="#3c5575"/>
+    <text x="1225" y="573" fill="#f0f7ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16" font-weight="600">Open dashboard</text><text x="1489" y="573" fill="#b7c9df" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="20">›</text>
+  </g>
+  <text x="1200" y="694" fill="#9bb2d0" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="18" font-weight="600">One click to the clue.</text>
+  <text x="1200" y="727" fill="#8199b9" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="16">Illustrative values shown</text>
+</svg>
