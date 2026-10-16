@@ -124,6 +124,7 @@ final class MonitorStore: ObservableObject {
     @Published private(set) var sleepSessions: [SleepSession] = []
     @Published private(set) var selfMonitoringWarning = false
     @Published private(set) var drainBaseline: Double?
+    @Published private(set) var mission = PowerMissionState()
     @Published var selectedSection: Section = .overview
     @Published var selectedProcess: Int32?
     @Published var search = ""
@@ -222,6 +223,21 @@ final class MonitorStore: ObservableObject {
         scheduleTimer()
     }
 
+    func startMission(_ action: MissionAction) {
+        mission.start(action: action, battery: battery, system: system)
+        scheduleTimer()
+    }
+
+    func markMissionChange() {
+        mission.markChanged(battery: battery, system: system)
+        scheduleTimer()
+    }
+
+    func resetMission() {
+        mission.reset()
+        scheduleTimer()
+    }
+
     func refresh() {
         guard !collecting && !isSleeping else { return }
         collecting = true
@@ -240,6 +256,7 @@ final class MonitorStore: ObservableObject {
                 if self.historyRange == range { self.history = result.history }
                 self.recentSamples.append(result.current)
                 self.recentSamples.removeAll { Date().timeIntervalSince($0.date) > 3600 }
+                self.mission.record(battery: self.battery, system: self.system)
                 if let selfProcess = result.processes.first(where: { $0.pid == getpid() }), selfProcess.cpuPercent > 5 {
                     self.highSelfCPUCount += 1
                 } else { self.highSelfCPUCount = 0 }
@@ -263,7 +280,7 @@ final class MonitorStore: ObservableObject {
 
     private func scheduleTimer() {
         guard !isSleeping else { timer?.invalidate(); timer = nil; return }
-        let interval: TimeInterval = visibleSurfaces > 0 ? 1 : (system.lowPowerMode ? 12 : 5)
+        let interval: TimeInterval = visibleSurfaces > 0 ? 1 : (mission.isSampling ? 5 : (system.lowPowerMode ? 12 : 5))
         if let timer, timer.isValid, abs(timer.timeInterval - interval) < 0.01 { return }
         timer?.invalidate()
         let next = Timer(timeInterval: interval, repeats: true) { [weak self] _ in
@@ -276,6 +293,7 @@ final class MonitorStore: ObservableObject {
 
     private func beginSleep() {
         guard !isSleeping else { return }
+        mission.interrupt("The Mac went to sleep during the test. Start again when it is awake.")
         isSleeping = true
         scheduleTimer()
         let session = SleepSession(start: Date(), startingBattery: battery.percent,

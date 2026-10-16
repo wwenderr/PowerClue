@@ -128,6 +128,16 @@ struct MenuDashboard: View {
             }
             .buttonStyle(.plain)
             .onHover { openDashboardHovered = $0 }
+            Button {
+                monitor.selectedSection = .mission
+                openWindow(id: "dashboard")
+                NSApp.activate(ignoringOtherApps: true)
+            } label: {
+                Label("Power Mission", systemImage: "scope")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.caption)
+            }
+            .buttonStyle(.plain)
         }
         .padding(16)
         .frame(width: 340)
@@ -215,6 +225,7 @@ struct DashboardView: View {
         case .overview: OverviewView()
         case .processes: ProcessesView()
         case .battery: BatteryView()
+        case .mission: PowerMissionView()
         case .performance: PerformanceView()
         case .sleep: SleepView()
         case .history: HistoryView()
@@ -240,6 +251,22 @@ private struct OverviewView: View {
                 }
             }
             .background(Palette.red.opacity(0.04))
+            Button { monitor.selectedSection = .mission } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "scope").font(.title2).foregroundStyle(Palette.blue)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Power Mission").font(.headline)
+                        Text("Set a battery-life goal and test what actually helps on your Mac.")
+                            .font(.caption).foregroundStyle(Palette.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").foregroundStyle(Palette.secondary)
+                }
+                .padding(17)
+                .background(Palette.card, in: RoundedRectangle(cornerRadius: 13))
+                .overlay(RoundedRectangle(cornerRadius: 13).stroke(Palette.border))
+            }
+            .buttonStyle(.plain)
             HStack(alignment: .top, spacing: 16) {
                 BatterySummary()
                 PerformanceSummary()
@@ -593,6 +620,186 @@ private struct ProcessGlossaryView: View {
     }
 }
 
+private struct PowerMissionView: View {
+    @EnvironmentObject private var monitor: MonitorStore
+    @AppStorage("powerMissionGoalMinutes") private var goalMinutes = 240
+    @State private var selectedAction: MissionAction = .lowPowerMode
+
+    private var mission: PowerMissionState { monitor.mission }
+    private var canStart: Bool {
+        !monitor.battery.isOnAC && monitor.battery.percent != nil && monitor.battery.watts != nil &&
+        (selectedAction != .lowPowerMode || !monitor.system.lowPowerMode)
+    }
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Panel {
+                VStack(alignment: .leading, spacing: 13) {
+                    Label("POWER MISSION", systemImage: "scope")
+                        .font(.caption.bold()).foregroundStyle(Palette.secondary)
+                    Text("What runtime are you aiming for?")
+                        .font(.title2.bold())
+                    Stepper(value: $goalMinutes, in: 30...720, step: 15) {
+                        Text(formatMissionMinutes(goalMinutes)).font(.title3.bold()).monospacedDigit()
+                    }
+                    .frame(maxWidth: 250)
+                    if monitor.battery.isOnAC {
+                        Text("Unplug to compare battery power and run a mission.")
+                            .foregroundStyle(Palette.secondary)
+                    } else if let remaining = monitor.battery.minutesRemaining {
+                        Text(remaining >= goalMinutes
+                             ? "macOS estimates about \(formatMissionMinutes(remaining)) remaining — enough for this goal at the current pace."
+                             : "macOS estimates about \(formatMissionMinutes(remaining)) remaining — roughly \(formatMissionMinutes(goalMinutes - remaining)) short of your goal.")
+                            .foregroundStyle(remaining >= goalMinutes ? .green : .orange)
+                    } else {
+                        Text("macOS has not provided a time estimate yet. You can still compare power draw.")
+                            .foregroundStyle(Palette.secondary)
+                    }
+                    Text("Time remaining is an estimate and may change as your work changes.")
+                        .font(.caption).foregroundStyle(Palette.secondary)
+                }
+                .font(.subheadline)
+            }
+
+            Panel {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("TEST ONE CHANGE").font(.caption.bold()).foregroundStyle(Palette.secondary)
+                            Text(stageTitle).font(.title3.bold())
+                        }
+                        Spacer()
+                        if mission.phase != .ready {
+                            Button("Reset") { monitor.resetMission() }
+                                .buttonStyle(.borderless)
+                        }
+                    }
+
+                    switch mission.phase {
+                    case .ready:
+                        Picker("What will you test?", selection: $selectedAction) {
+                            ForEach(MissionAction.allCases) { action in
+                                Text(action.rawValue).tag(action)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: 440, alignment: .leading)
+                        Text(selectedAction.instruction).foregroundStyle(Palette.secondary)
+                        if selectedAction == .lowPowerMode && monitor.system.lowPowerMode {
+                            Text("Low Power Mode is already on. Pick another change to test.")
+                                .foregroundStyle(.orange)
+                        } else if !monitor.battery.isOnAC && monitor.battery.watts == nil {
+                            Text("This Mac has not provided a battery-power reading yet. The test needs that value.")
+                                .foregroundStyle(.orange)
+                        }
+                        Button("Start baseline") { monitor.startMission(selectedAction) }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(!canStart)
+                    case .baseline:
+                        Text("Keep working as usual. Make your change only after the baseline finishes.")
+                            .foregroundStyle(Palette.secondary)
+                        stageProgress
+                    case .change:
+                        Text(mission.action.instruction).foregroundStyle(Palette.secondary)
+                        if let message = mission.message {
+                            Text(message).foregroundStyle(.orange)
+                        }
+                        Button("I made the change") { monitor.markMissionChange() }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(mission.action == .lowPowerMode && !monitor.system.lowPowerMode)
+                        if mission.action != .lowPowerMode {
+                            Text("PowerClue cannot verify this manual action; it will compare whole-Mac battery power after your marker.")
+                                .font(.caption).foregroundStyle(Palette.secondary)
+                        }
+                    case .after:
+                        Text("Continue the same kind of work while PowerClue measures again.")
+                            .foregroundStyle(Palette.secondary)
+                        stageProgress
+                    case .finished:
+                        if let result = mission.result { resultView(result) }
+                        Button("Run another test") { monitor.resetMission() }
+                            .buttonStyle(.bordered)
+                    case .interrupted:
+                        Text(mission.message ?? "This test was interrupted.")
+                            .foregroundStyle(.orange)
+                        Button("Start again") { monitor.resetMission() }
+                            .buttonStyle(.borderedProminent)
+                    }
+                }
+                .font(.subheadline)
+            }
+
+            Text("Each stage allows 15 seconds to settle, then samples battery output for 90 seconds. PowerClue compares median watts; a single before/after test cannot prove what caused a change.")
+                .font(.caption).foregroundStyle(Palette.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .onAppear {
+            if monitor.system.lowPowerMode && selectedAction == .lowPowerMode { selectedAction = .pauseApp }
+        }
+    }
+
+    private var stageTitle: String {
+        switch mission.phase {
+        case .ready: "Choose a reversible experiment"
+        case .baseline: "Measuring before"
+        case .change: "Make your change"
+        case .after: "Measuring after"
+        case .finished: "Your result"
+        case .interrupted: "Test interrupted"
+        }
+    }
+
+    private var stageProgress: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            ProgressView(value: mission.progress())
+                .tint(Palette.blue)
+            Text("\(Int(mission.progress() * 100))% · \(mission.phase == .baseline ? mission.baseline.count : mission.after.count) readings")
+                .font(.caption).foregroundStyle(Palette.secondary)
+                .monospacedDigit()
+        }
+    }
+
+    @ViewBuilder private func resultView(_ result: MissionResult) -> some View {
+        HStack(spacing: 16) {
+            Metric("Before", value: String(format: "%.1f W", result.beforeWatts))
+            Image(systemName: "arrow.right").foregroundStyle(Palette.secondary)
+            Metric("After", value: String(format: "%.1f W", result.afterWatts))
+        }
+        Divider()
+        switch result.verdict {
+        case .lower:
+            Text(String(format: "Battery power was %.1f W lower after the change.", result.differenceWatts))
+                .font(.headline).foregroundStyle(.green)
+            if let minutes = result.approximateMinutesGained {
+                Text("At the same workload, that could mean about +\(formatMissionMinutes(minutes)) of runtime.")
+                    .font(.subheadline)
+            }
+            Text("Confidence: moderate. The drop exceeds the variation in these two windows, but repeat the test for a stronger conclusion.")
+                .foregroundStyle(Palette.secondary)
+        case .higher:
+            Text(String(format: "Battery power was %.1f W higher after the change.", -result.differenceWatts))
+                .font(.headline).foregroundStyle(.orange)
+            Text("This comparison did not show a saving. Repeat under similar work to check it.")
+                .foregroundStyle(Palette.secondary)
+        case .inconclusive:
+            Text("No reliable difference yet")
+                .font(.headline).foregroundStyle(.orange)
+            Text("The change was smaller than normal reading variation, or CPU activity changed substantially. Try again during steadier work.")
+                .foregroundStyle(Palette.secondary)
+        }
+        Text("Whole-Mac median: \(result.beforeCount) before and \(result.afterCount) after readings. CPU activity: \(Int(result.beforeCPU))% → \(Int(result.afterCPU))%. This is not a per-app watt measurement.")
+            .font(.caption).foregroundStyle(Palette.secondary)
+    }
+
+    private func formatMissionMinutes(_ minutes: Int) -> String {
+        let hours = minutes / 60
+        let rest = minutes % 60
+        if hours == 0 { return "\(rest)m" }
+        if rest == 0 { return "\(hours)h" }
+        return "\(hours)h \(rest)m"
+    }
+}
+
 private struct BatteryView: View {
     @EnvironmentObject private var monitor: MonitorStore
     var body: some View {
@@ -924,7 +1131,7 @@ private struct SettingsView: View {
             Panel {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("MONITORING").font(.caption.bold()).foregroundStyle(Palette.secondary)
-                    Text("Sampling: 1 second while a window or menu is open; 5 seconds in the background; 12 seconds in Low Power Mode.")
+                    Text("Sampling: 1 second while a window or menu is open; 5 seconds in the background; 12 seconds in Low Power Mode, except 5 seconds during a Mission measurement.")
                     Text("Network activity and power assertions refresh about every 10 seconds. Sampling pauses during system sleep.")
                     Text("History is stored locally: detailed samples for 48 hours and minute averages for 30 days.")
                     Text("No account, telemetry, administrator access, Accessibility, Screen Recording, or Full Disk Access is required.")
