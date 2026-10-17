@@ -58,7 +58,7 @@ The script builds an ad hoc signed local app bundle at `dist/PowerClue.app`. Cli
 
 ## How it works
 
-PowerClue samples public macOS system APIs and uses the system `nettop` and `pmset` utilities for the signals they expose. It samples every second while its menu or dashboard is visible, every five seconds in the background, and every twelve seconds in Low Power Mode except during a Mission measurement, when it samples every five seconds. Polling pauses during system sleep.
+PowerClue samples public macOS system APIs and uses the system `nettop` and `pmset` utilities for the signals they expose. It samples every three seconds while its menu or dashboard is visible, every five seconds in the background, and every twelve seconds in Low Power Mode except during a Mission measurement, when it samples every five seconds. Polling pauses during system sleep.
 
 History is stored locally in SQLite: detailed samples for **48 hours** and one-minute aggregates for **30 days**. Charts cover the last five minutes through 24 hours. The database remains under `Application Support/EasyActivityMonitor/history.sqlite` so existing users keep their history after the rename.
 

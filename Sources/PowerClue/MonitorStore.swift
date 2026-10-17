@@ -8,7 +8,7 @@ private struct SampleResult {
     var system: SystemSnapshot
     var processes: [ProcessSnapshot]
     var assertions: [PowerAssertion]
-    var history: [HistorySample]
+    var history: [HistorySample]?
     var current: HistorySample
     var drainBaseline: Double?
 }
@@ -29,7 +29,7 @@ private final class SamplePipeline: @unchecked Sendable {
     private var baseline: Double?
     private var lastBaseline = Date.distantPast
 
-    func sample(range: HistoryRange) -> SampleResult {
+    func sample(range: HistoryRange, includeHistory: Bool) -> SampleResult {
         let now = Date()
         var batterySnapshot = battery.sample()
         var systemSnapshot = system.sample()
@@ -84,8 +84,11 @@ private final class SamplePipeline: @unchecked Sendable {
         }
         return SampleResult(battery: batterySnapshot, system: systemSnapshot,
                             processes: processSnapshots, assertions: powerAssertions,
-                            history: history.samples(since: Date().addingTimeInterval(-range.seconds),
-                                                     bucketSeconds: range.bucketSeconds), current: sample,
+                            history: includeHistory
+                                ? history.samples(since: Date().addingTimeInterval(-range.seconds),
+                                                  bucketSeconds: range.bucketSeconds)
+                                : nil,
+                            current: sample,
                             drainBaseline: baseline)
     }
 
@@ -125,7 +128,11 @@ final class MonitorStore: ObservableObject {
     @Published private(set) var selfMonitoringWarning = false
     @Published private(set) var drainBaseline: Double?
     @Published private(set) var mission = PowerMissionState()
-    @Published var selectedSection: Section = .overview
+    @Published var selectedSection: Section = .overview {
+        didSet {
+            if sectionNeedsHistory { loadHistory() }
+        }
+    }
     @Published var selectedProcess: Int32?
     @Published var search = ""
     @Published var historyRange: HistoryRange = .oneHour {
@@ -182,6 +189,9 @@ final class MonitorStore: ObservableObject {
     }
 
     var topProcess: ProcessSnapshot? { processes.first }
+    private var sectionNeedsHistory: Bool {
+        selectedSection == .battery || selectedSection == .performance || selectedSection == .history
+    }
     var selectedProcessDetail: ProcessSnapshot? { processes.first { $0.pid == selectedProcess } }
     var filteredProcesses: [ProcessSnapshot] {
         guard !search.isEmpty else { return processes }
@@ -243,8 +253,9 @@ final class MonitorStore: ObservableObject {
         collecting = true
         let pipeline = self.pipeline
         let range = historyRange
+        let includeHistory = sectionNeedsHistory
         collectorQueue.async { [weak self] in
-            let result = pipeline.sample(range: range)
+            let result = pipeline.sample(range: range, includeHistory: includeHistory)
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 self.battery = result.battery
@@ -253,7 +264,7 @@ final class MonitorStore: ObservableObject {
                 self.processes = result.processes
                 self.assertions = result.assertions
                 self.drainBaseline = result.drainBaseline
-                if self.historyRange == range { self.history = result.history }
+                if self.historyRange == range, let history = result.history { self.history = history }
                 self.recentSamples.append(result.current)
                 self.recentSamples.removeAll { Date().timeIntervalSince($0.date) > 3600 }
                 self.mission.record(battery: self.battery, system: self.system)
@@ -280,7 +291,7 @@ final class MonitorStore: ObservableObject {
 
     private func scheduleTimer() {
         guard !isSleeping else { timer?.invalidate(); timer = nil; return }
-        let interval: TimeInterval = visibleSurfaces > 0 ? 1 : (mission.isSampling ? 5 : (system.lowPowerMode ? 12 : 5))
+        let interval: TimeInterval = visibleSurfaces > 0 ? 3 : (mission.isSampling ? 5 : (system.lowPowerMode ? 12 : 5))
         if let timer, timer.isValid, abs(timer.timeInterval - interval) < 0.01 { return }
         timer?.invalidate()
         let next = Timer(timeInterval: interval, repeats: true) { [weak self] _ in

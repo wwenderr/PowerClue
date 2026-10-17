@@ -496,7 +496,7 @@ private struct ProcessesView: View {
                 .font(.caption).foregroundStyle(Palette.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Panel {
-                VStack(spacing: 0) {
+                LazyVStack(spacing: 0) {
                     HStack {
                         Text("PROCESS").frame(maxWidth: .infinity, alignment: .leading)
                             .help("A running app or background system task.")
